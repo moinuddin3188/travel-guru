@@ -1,0 +1,28 @@
+.bg {
+    background-image: url("../../Fakedata/Images/Rectangle1.png");
+    background-size: cover;
+    background-position: top;
+    height: 625px;
+}
+.home {
+    margin-top: 100px;
+}
+.booking-btn {
+    background-color: orange;
+    padding: 6px 25px;
+    border: none;
+    border-radius: 5px;
+    font-weight: 500;
+    font-size: 14px;
+}
+.heading {
+    text-align: left;
+    color: white;
+}
+.heading h1 {
+    font-size: 45px;
+}
+
+.heading p {
+    font-size: 14px;
+}

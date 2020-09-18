@@ -1,0 +1,20 @@
+.navbar .navbar-brand {
+    margin-right: 130px;
+}
+.navbar-nav a {
+    margin-left: 25px;
+    font-size: 14px;
+}
+.navbar-nav .login-btn {
+    margin-left: 25px;
+    background-color: orange;
+    padding: 0px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    height: 30px;
+}
+.navbar .navbar-collapse .navbar-nav .user-name {
+    font-size: 15px;
+    color: #ff5e00;
+    font-weight: 500;
+}
