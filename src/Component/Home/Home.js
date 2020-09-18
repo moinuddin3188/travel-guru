@@ -22,7 +22,7 @@ const Home = () => {
                     <div className="col-md-7">
                         <div className="row">
                             {
-                                spots.map(spot => <SpotCard spot={spot} />)
+                                spots.map(spot => <SpotCard key={spot.id} spot={spot} />)
                             }
                         </div>
                     </div>

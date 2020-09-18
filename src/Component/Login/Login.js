@@ -9,18 +9,19 @@ import firebaseConfig from '../../Firebase/Firebase.config';
 import { useHistory, useLocation } from 'react-router-dom';
 import NavbarWhite from '../Navbar/Navbar';
 
-
+//start changing---
 firebase.initializeApp(firebaseConfig);
 
 
 const Login = () => {
 
     const [newUser, setNewUser] = useState(true);
-    const [passwordMatch, setPasswordMatch] = useState({
-        password: "",
-        isPasswordMatch: false,
-        error: ""
-    });
+    const [fieldValidation, setFieldValidation] = useState({
+        emailError: "",
+        passwordError: "",
+        confirmPasswordError: "",
+        isPasswordMatch: false
+    })
 
     const [user, setUser] = useContext(UserContext);
     const [forgetPassword, setForgetPassword] = useState(false);
@@ -32,13 +33,23 @@ const Login = () => {
     const handleBlur = e => {
         let isFieldValid = true;
         if (e.target.name === "email") {
-            isFieldValid = /\S+@\S+\.\S+/.test(e.target.value);
+            const isEmailValid = /\S+@\S+\.\S+/.test(e.target.value);
+            isFieldValid = isEmailValid;
+            isEmailValid ? setFieldValidation({...fieldValidation, emailError: ""})
+                        : setFieldValidation({...fieldValidation, emailError: "Email is not valid"});
         }
         if (e.target.name === "password") {
-            const isPasswordValid = e.target.value.length > 6;
+            const isPasswordLength = e.target.value.length > 6;
             const passwordHasNumber = /\d{1}/.test(e.target.value);
-            isFieldValid = isPasswordValid && passwordHasNumber;
-            setPasswordMatch({ ...passwordMatch, password: e.target.value });
+            const isPasswordValid = isPasswordLength && passwordHasNumber;
+            isFieldValid = isPasswordValid;
+            setUser({...user, password: e.target.value});
+            isPasswordValid ? setFieldValidation({...fieldValidation, passwordError: ""})
+                        : setFieldValidation({...fieldValidation, passwordError: "Password must contain letter & number"});
+        }
+        if(e.target.name === "confirmPassword"){
+            e.target.value === user.password ? setFieldValidation({...fieldValidation, confirmPasswordError: "", isPasswordMatch: true})
+                                            : setFieldValidation({...fieldValidation, confirmPasswordError: "Password not matched", isPasswordMatch: false});
         }
         if (isFieldValid) {
             const userInfo = { ...user };
@@ -47,14 +58,9 @@ const Login = () => {
         }
     }
 
-    const handleChange = e => {
-        e.target.value === passwordMatch.password ?
-            setPasswordMatch({ ...passwordMatch, isPasswordMatch: true, error: "" }) :
-            setPasswordMatch({ ...passwordMatch, isPasswordMatch: false, error: "password don't match" })
-    }
 
     const handleLogin = e => {
-        if (newUser && passwordMatch.isPasswordMatch && user.email && user.password) {
+        if (newUser && fieldValidation.isPasswordMatch && user.email && user.password) {
             firebase.auth().createUserWithEmailAndPassword(user.email, user.password)
                 .then(res => {
                     const userInfo = { ...user };
@@ -139,6 +145,7 @@ const Login = () => {
         firebase.auth().signInWithPopup(FBProvider)
         .then(res => {
             var user = res.user;
+            console.log(user);
             history.replace(from);
         })
         .catch(error => {
@@ -163,14 +170,17 @@ const Login = () => {
 
                             <input onBlur={handleBlur} type="text" name="email" placeholder={forgetPassword ? "Enter your email" : "Email"} required />
                             <br />
+                            <p className="error">{fieldValidation.emailError}</p>
 
                             <input onBlur={handleBlur} type="password" name="password" placeholder={forgetPassword ? "Password you remember" : "Password"} required />
                             <br />
+                            <p className="error">{fieldValidation.passwordError} </p>
+
                             {!newUser && <p onClick={() => setForgetPassword(!forgetPassword)} className="forget-password">Forget password?</p>}
 
-                            {newUser && <> <input onChange={handleChange} type="password" name="confirmPassword" placeholder="Confirm password" required />
+                            {newUser && <> <input onChange={handleBlur} type="password" name="confirmPassword" placeholder="Confirm password" required />
                                 <br />
-                                <p style={{ color: "red", fontSize: "11px" }}>{passwordMatch.error}</p> </>}
+                                <p style={{ color: "red", fontSize: "11px" }}>{fieldValidation.confirmPasswordError}</p> </>}
 
                             {
                                 forgetPassword ? <input type="submit" value="Send email"/> 
