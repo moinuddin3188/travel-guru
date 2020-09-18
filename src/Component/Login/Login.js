@@ -10,7 +10,6 @@ import { useHistory, useLocation } from 'react-router-dom';
 import NavbarWhite from '../Navbar/Navbar';
 
 
-
 firebase.initializeApp(firebaseConfig);
 
 
